@@ -1,0 +1,10 @@
+# 의존성
+node_modules/
+package-lock.json
+
+# 테스트파일
+test.js
+src/test.ts
+
+# config
+config.ts
