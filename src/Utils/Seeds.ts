@@ -1,6 +1,9 @@
 //북엔라이프 auth관련 key 상수
 export const BOOKNLIFE_AUTH_API_KEY = "69e48799bd4ac3a728b9eb976b2c0b";
 
+//북엔라이프 메인 API key 상수
+export const BOOKNLIFE_API_KEY = "lcGWuaO9I4lbF7r54DeqeUZYlOzZUM";
+
 export const BOOKLIFE = {
   keyHash: "F32269D997694233A489CAACC2873729",
   ivHash: "56A0AD7D94AF4571B5B42476AA3B638A",

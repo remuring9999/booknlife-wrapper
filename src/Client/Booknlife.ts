@@ -1,6 +1,10 @@
-import { EncryptLoginInfo } from "../Utils/Algorithm";
+import { EncryptAES, EncryptLoginInfo } from "../Utils/Algorithm";
 import axios, { AxiosInstance } from "axios";
-import { BOOKNLIFE_AUTH_API_KEY, reCpatchaSiteKey } from "../Utils/Seeds";
+import {
+  BOOKNLIFE_API_KEY,
+  BOOKNLIFE_AUTH_API_KEY,
+  reCpatchaSiteKey,
+} from "../Utils/Seeds";
 import { Solver } from "@2captcha/captcha-solver";
 import { HttpCookieAgent, HttpsCookieAgent } from "http-cookie-agent/http";
 import { CookieJar } from "tough-cookie";
@@ -10,6 +14,7 @@ class Booknlife {
   private client: AxiosInstance;
   private jar: CookieJar;
   private readyInfo: string = "";
+  private accessToken: string = "";
 
   constructor() {
     this.jar = new CookieJar();
@@ -93,6 +98,34 @@ class Booknlife {
         },
       }
     );
+
+    // 로그인 성공시 토큰 저장
+    if (Request.data.ResultCd === "0000") {
+      this.accessToken = Request.data.ResultData.accessToken;
+    } else {
+      throw new Error(`Login Error`);
+    }
+  }
+
+  public async isLogin() {
+    const Request = await this.client.post(
+      `https://webapi.booknlife.com/api/Member/GetMembInfoV2`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "X-Api-Key": BOOKNLIFE_API_KEY,
+        },
+      }
+    );
+
+    console.log(Request.data);
+
+    if (Request.data.ResultCd === "0000") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
