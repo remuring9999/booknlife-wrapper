@@ -1,4 +1,4 @@
-import { EncryptAES, EncryptLoginInfo } from "../Utils/Algorithm";
+import { DeEncryptAES, EncryptAES, EncryptLoginInfo } from "../Utils/Algorithm";
 import axios, { AxiosInstance } from "axios";
 import {
   BOOKNLIFE_API_KEY,
@@ -33,7 +33,7 @@ class Booknlife {
     this._password = password;
   }
 
-  public async AuthApiReady(type?: string | "Bearer") {
+  private async AuthApiReady(type?: string | "Bearer") {
     const Request = await this.client.post(
       `https://authapi.booknlife.com/api/Common/Ready`,
       {},
@@ -73,6 +73,9 @@ class Booknlife {
     return solve.data;
   }
 
+  /**
+   * 북앤라이프 로그인에 로그인하는 함수입니다. Class가 생성될때 인자로 받은 id와 passwd를 사용해 로그인합니다.
+   */
   public async login() {
     const id = EncryptLoginInfo(this._id);
     const passwd = EncryptLoginInfo(this._password);
@@ -110,6 +113,10 @@ class Booknlife {
     }
   }
 
+  /**
+   * 현재 로그인되어있는지 확인하는 함수입니다.
+   * @returns 로그인 상태를 반환합니다.
+   */
   public async isLogin() {
     const Request = await this.client.post(
       `https://webapi.booknlife.com/api/Member/GetMembInfoV2`,
@@ -129,14 +136,31 @@ class Booknlife {
     }
   }
 
+  /**
+   * 북앤라이프에 핀코드를 충전하는 함수입니다. 여러개의 핀코드를 충전할 수 있습니다.
+   * @param data PinCode[]
+   * @example 
+   * charge([
+      {
+        pin: "1234567890123456",
+        code: "0000",
+      },
+      {
+        pin: "1234567890123457",
+        code: "0000",
+      },
+    ]);
+   * @returns
+   */
   public async charge(data: PinCode[]) {
     if (!this.accessToken) {
       throw new Error(`Login Required`);
     }
 
     if (!(await this.isLogin())) {
-      // 엑세스 토큰이 만료되었을 경우 다시 로그인
-      await this.login();
+      throw new Error(
+        `AccessToken Expired. (Use the isLogin() method to configure logic to re-login when the AccessToken expires.)`
+      );
     }
 
     const pinList = data.map((v) => {
@@ -171,6 +195,37 @@ class Booknlife {
     }
 
     return Request.data.ResultData;
+  }
+
+  public async getBalance() {
+    if (!this.accessToken) {
+      throw new Error(`Login Required`);
+    }
+
+    if (!(await this.isLogin())) {
+      throw new Error(
+        `AccessToken Expired. (Use the isLogin() method to configure logic to re-login when the AccessToken expires.)`
+      );
+    }
+
+    const Request = await this.client.post(
+      "https://webapi.booknlife.com/api/Member/GetMembInfoV2",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "X-Api-Key": BOOKNLIFE_API_KEY,
+        },
+      }
+    );
+
+    if (Request.data.ResultCd !== "0000") {
+      throw new Error(`MemberInfoFetch Error`);
+    }
+
+    const balance = DeEncryptAES(Request.data.ResultData.cashBal);
+
+    return balance;
   }
 }
 

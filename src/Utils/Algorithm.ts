@@ -14,14 +14,25 @@ export function EncryptLoginInfo(string: string): string {
 }
 
 /**
- * 북앤라이프 로그인 쿠키 암호화 알고리즘
+ * 북앤라이프 암호화 알고리즘
  * @param string 암호화할 문자열
  * @returns AES-256 암호화된 문자열
  */
-
 export function EncryptAES(string: string): string {
   const key = enc.Hex.parse(BOOKLIFE.keyHash);
   const iv = enc.Hex.parse(BOOKLIFE.ivHash);
 
   return AES.encrypt(string, key, { iv }).toString();
+}
+
+/**
+ * 북앤라이프 복호화 알고리즘
+ * @param string
+ * @returns plain text
+ */
+export function DeEncryptAES(string: string): string {
+  const key = enc.Hex.parse(BOOKLIFE.keyHash);
+  const iv = enc.Hex.parse(BOOKLIFE.ivHash);
+
+  return AES.decrypt(string, key, { iv }).toString(enc.Utf8);
 }
