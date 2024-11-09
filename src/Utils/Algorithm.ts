@@ -1,5 +1,5 @@
 import { AES, enc } from "crypto-js";
-import { BOOKLIFEAUTH } from "./Seeds";
+import { BOOKLIFE, BOOKLIFEAUTH } from "./Seeds";
 
 /**
  * 북앤라이프 로그인시 사용되는 암호화 알고리즘
@@ -20,8 +20,8 @@ export function EncryptLoginInfo(string: string): string {
  */
 
 export function EncryptAES(string: string): string {
-  const key = enc.Hex.parse(BOOKLIFEAUTH.keyHash);
-  const iv = enc.Hex.parse(BOOKLIFEAUTH.ivHash);
+  const key = enc.Hex.parse(BOOKLIFE.keyHash);
+  const iv = enc.Hex.parse(BOOKLIFE.ivHash);
 
   return AES.encrypt(string, key, { iv }).toString();
 }

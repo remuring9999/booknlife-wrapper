@@ -1,4 +1,4 @@
-//북엔라이프 auth관련 key 상수
+//북엔라이프 auth관련 API key 상수
 export const BOOKNLIFE_AUTH_API_KEY = "69e48799bd4ac3a728b9eb976b2c0b";
 
 //북엔라이프 메인 API key 상수
@@ -15,5 +15,5 @@ export const BOOKLIFEAUTH = {
   ivHash: "D79B1E7FF3984AAB85C11ECAF04F141E",
 };
 
-//로그인페이지 reCaptcha data-site-key
-export const reCpatchaSiteKey = "6LcuZiQpAAAAACyQj7XwLy7RGgLHDaOaT_qdwojS";
+//data-sitekey
+export const CAPTCHA_DATA_SITE_KEY = "6LcuZiQpAAAAACyQj7XwLy7RGgLHDaOaT_qdwojS";

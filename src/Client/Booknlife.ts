@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from "axios";
 import {
   BOOKNLIFE_API_KEY,
   BOOKNLIFE_AUTH_API_KEY,
-  reCpatchaSiteKey,
+  CAPTCHA_DATA_SITE_KEY,
 } from "../Utils/Seeds";
 import { Solver } from "@2captcha/captcha-solver";
 import { HttpCookieAgent, HttpsCookieAgent } from "http-cookie-agent/http";
@@ -15,8 +15,10 @@ class Booknlife {
   private jar: CookieJar;
   private readyInfo: string = "";
   private accessToken: string = "";
+  private _id: string = "";
+  private _password: string = "";
 
-  constructor() {
+  constructor(id: string, password: string) {
     this.jar = new CookieJar();
     this.client = axios.create({
       headers: {
@@ -27,6 +29,8 @@ class Booknlife {
       httpAgent: new HttpCookieAgent({ cookies: { jar: this.jar } }),
       httpsAgent: new HttpsCookieAgent({ cookies: { jar: this.jar } }),
     });
+    this._id = id;
+    this._password = password;
   }
 
   public async AuthApiReady(type?: string | "Bearer") {
@@ -69,14 +73,13 @@ class Booknlife {
     return solve.data;
   }
 
-  public async login(loginId: string, password: string) {
-    const id = EncryptLoginInfo(loginId);
-    const passwd = EncryptLoginInfo(password);
+  public async login() {
+    const id = EncryptLoginInfo(this._id);
+    const passwd = EncryptLoginInfo(this._password);
 
-    // g-recaptcha-response 가져오기
     const captchaResponse = await this.solveCaptcha(
       "https://www.booknlife.com/auth/login/",
-      reCpatchaSiteKey
+      CAPTCHA_DATA_SITE_KEY
     );
 
     await this.AuthApiReady(); //login 요청전 ready api 호출
@@ -119,13 +122,56 @@ class Booknlife {
       }
     );
 
-    console.log(Request.data);
-
     if (Request.data.ResultCd === "0000") {
       return true;
     } else {
       return false;
     }
+  }
+
+  public async charge(pin: string, code: string) {
+    if (!this.accessToken) {
+      throw new Error(`Login Required`);
+    }
+
+    if (!(await this.isLogin())) {
+      // 엑세스 토큰이 만료되었을 경우 다시 로그인
+      await this.login();
+    }
+
+    const EncryptPIN = EncryptAES(pin);
+    const EncryptCode = EncryptAES(code);
+
+    const captchaResponse = await this.solveCaptcha(
+      "https://www.booknlife.com/cashcharge/",
+      CAPTCHA_DATA_SITE_KEY
+    );
+
+    const Request = await this.client.post(
+      "https://webapi.booknlife.com/api/Pay/PinCashCharge",
+      {
+        pinCashChargeType: "NORMAL",
+        pinList: [
+          {
+            pinNo: EncryptPIN,
+            pinPw: EncryptCode,
+          },
+        ],
+        vrtInfo: captchaResponse,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "X-Api-Key": BOOKNLIFE_API_KEY,
+        },
+      }
+    );
+
+    if (Request.data.ResultCd !== "0000") {
+      throw new Error(`Charge Error`);
+    }
+
+    return Request.data;
   }
 }
 

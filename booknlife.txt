@@ -58,10 +58,71 @@ AES 복호화 후 JWT 값
 
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE3MzA5OTQ1MDAsImV4cCI6MTczMDk5NjMwMCwiaXNzIjoiYm9va25saWZlIiwiaW5mIjp7InVzZXJpZCI6InN3c3cxMjEzIiwidXNlcm5hbWUiOiLsnbTsg4Htl4wiLCJhY2Nlc3NUeXBlIjoiSCJ9fQ.P4XtQuNKxPIZi3sRsTT8FZrOj9txEbZPCFmSa_xWz6A
 
-* 로그인 유지하려면 accessToken 값을 AES로 암호화하여 쿠키에 저장해야함\
+--* 로그인 유지하려면 accessToken 값을 AES로 암호화하여 쿠키에 저장해야함--
 
-accessToken 30분간 유효
-30분뒤 refresh 작업해야함
+--accessToken 30분간 유효--
+--30분뒤 refresh 작업해야함--
 
 refreshToken 값
 1q3CHejrum%2Fq2goHgKC7TC85mkhqoEn%2FjMgCYhjqeDw%3D
+
+로그인 유지 X 30분뒤 무조건 풀림
+로그인 여부 확인해서 accessToken 만료될떄마다 로그인해야함.
+
+----------------------------------------------------------------------------------------------------
+
+# 핀 충전 관련
+
+payload
+{
+    "pinCashChargeType": "NORMAL",
+    "pinList": [
+        {
+            "pinNo": "5eFzGL1osm8LzKiMN4YbgxxnhjPquG/k2EFmrPj8mVA=",
+            "pinPw": "YHSgo0uQHJE9MNYbP4U56Q=="
+        },
+        {
+            "pinNo": "0qHAVEdD0oXTl0N1APiB+sfQkG+4KhbCJ7YXxhBEKwc=",
+            "pinPw": "YHSgo0uQHJE9MNYbP4U56Q=="
+        }
+    ],
+    "vrtInfo": "03AFcWeA6NxZvkE3vCzqH0gG6ufB7CbZwqKLTSUNwM3SiCFIWtO8pqPzCTI4K5Klwln0Ff8b2DcqbXlEMOLSWR1iC224J8CwxCZrDJMET2qBx12wlMsx5N-smUGqTNb_WlAaIEFdUXr8s_L2vDDDcdxpAymyCsk86cu6OxumjvRySLGdXEHYkSOzqCIXwvxZ-1gMrKg4peBPH-qq_8LC92_EfAYHSnwvYlii-vIQsDd5LQHWa8bsOVv84cZGx9JTSxujzSV8sfvszFUwZftNZuqhIYYYKNB9HVbyG9_q-ZREoihFGD8qNWYlB6yk9ybVdYi0V4hsAj-mR_UTF6e0Qs6gArud-uWRpb2SYVqEMfftJWbtXbGOjGyg8pJVpqrkvdjLetEhtTceKGfJtVrLyJViqPuUYt7v2IfJNP8raXAVzGuiFD5_A3UBPqCtCaVa-XxE17107OqtPKbZb0OP0Mx2N0-IZnRFtesNZs9cKC_CCdi810PpjvC0x_Ae9kqoWE3Z9hCwxb0ekTRFqonjKYSCb-38jrHsHfxzZk28OIrLikErCXwkd6d0DjHXofBopX557u-rnVeUD0omvmTDqDV5cPfpbOgKMTrcs54oMUbxXvwZ87WZw915PsCVKdBGvwGLCZkgXRdo74_rm6l55HdG-sFOBtMV4SoLu-JkcPmrLeIubeblHqvLRFYmXihH_UTVYxAqaZAcdxAG4ta0LzP7220tWSfrAd0tye_U6ewlPPkqlk9kMZ7i18afG15Ut4QGgZ-c0PNA8uNUiF5y9Bv8FglSdT9nfzGLynAcYetWnWI9kUn_V3-tyaBmP-qns07O8fJJR7ZUA9NXzgHXABf3XzZTBAwBvXO0fs2Fx7r9zryNn0JPVq3u1Zh4991oFriHy2_dLtkCpFtjNQ8jy-64reDBDmSc1ZKxDYkaXUS_LLJIebNw6CKrT7ueMoEql_7mtL-3ugszZ4DsJbQJMEM7lWSmyNsGg_qGLL-E3h_EkUN5izBpEr5MbM-rp6lfXWhpX9fOdoK2uk57aNebBLrczCTe1_KEMf4xaH55av1op0pTqI13Rkcko-Fpq5c0EjQAi000FLM-HbCOd1U_X7CnukjSd5nx1BmwLLv4IaKke3wK9em7yYlhB9WgGH6LFu3bAXfy7XdOoM5WhTamJ6gmPENs7pAcYctBBruzG0mRl0Hetb-e1_12lsPU7PuHoPcaL4oc5UWxRYHeVD83ORkA0TWBHC-idEgZ5dngbBk2_yTyYdai2RBHVJ1ErW9DgHLb9_f7iFDL16FOY1zjzYdwTEXw5B65-D8TJz_c2uGVxNUaGBnSbs8f_v_0LXbGUZNFdOeyArXotYIi4t0UU3IJGsFomfPdGC2ijdUMDTpdM5sUZyZh7OVVlS7n2JLiWz9Y9F5NURGPtq-GaP5XlyApieFciXFVoRlEyEfkcA8nmMwpEmo85mKpHOSWW8X6Gy24T7IZN-uNw-F0p5l-O_R_p4IzlDTqZqvS7dB6JEJoYTmw6KAuIVXIWWRuwnLc4N16H4AX3qHwtM78mS5UqyemhdHL8hzy2pR4LHB8KiNdkyAwVE1p9Zb5k-1ZGBSQvx3diP20Y3XaLITjYkjHr9VWvOweKufo4_qs1925UUPRsxCTBWL8JXlQ_pQCroP4kN4qxxOUzp0pRpn7o2BfHpyxwwpRcNuEQgqRDbnxeES6L9UEOXgKPot0SZhQ9s0LkeQsXY58ZDL2WMpRhthzB50r57g9SS6gxnwRXilVkMbmjTw-NMeMs7jojOrDdPtzUEGa4jc5fMnxmxUzbREruKOcMJbYCF8wUwvk7Jp-Eam_pqQTQV3CePqNJwnOeMvyE8NbftbBtZ1mrNUppG3EUxvdYKzvkAS8iRm42ANC6wIsvz88MseG4t2Y1Xh_nJaGOhb8EE7s8cUmWGWnTJzC02bUqbEmtrFKO3aw"
+}
+
+핀번호, 인증번호 암호화 해쉬값
+keyHash: i().enc.Hex.parse("F32269D997694233A489CAACC2873729"),
+ivHash: i().enc.Hex.parse("56A0AD7D94AF4571B5B42476AA3B638A")
+
+vrtInfo: reCaptcha _rpUR1K3dP2WZq48XUueHjpmDJnPKloSNgPHnL6bam_eA9o5_T69u5PWoyrOXvrso9uXvb2yrgCr9ZrQ293dEkp62ZhcZr5fn6aF0xuzJjU9o5fWyPztMMwHMtiJJOG1shzO10bY3F_wC426DydTslFe6mfAn9HnOi74otQs8COh4ClNHqf99Z0viTk0vyO0UE1HIxOULx_SUk0CCYY_e9x0nZQEkCPj8PpfNouVKHt5UVFxDtqFguhM2Q5NkpErVganofIKJ6udlnKL
+
+복호화 해제 후 값들
+"pinList": [
+    {
+        "pinNo": "1234567890123456",
+        "pinPw": "0000"
+    },
+    {
+        "pinNo": "1234567890123457",
+        "pinPw": "0000"
+    }
+],
+
+올바르지 않은 핀번호 충전요청에 대한 제한 X
+요청할떄마다 reCaptcha 풀어야하는게 단점
+
+----------------------------------------------------------------------------------------------------
+
+# 2captcha 요금
+
+로그인시 건당 $0.00299 과금
+충전시 건당 $0.00299 과금
+
+평균 해결속도 30s (가끔씩 매우오래 걸리거나 5초내외로 빠르게 처리되기도 함)
+
+30분마다 accessToken이 만료되므로 30분마다 login 작업을 수행해야함
+=> 1시간마다 $0.00598 과금
+
+충전신청을 1회 할때마다 $0.00299 과금됨
+
+=> 자체적으로 reCaptcha 해결하는 모델만들어서 오래걸리더라도 비용걱정 없이 캡챠 해결하기
+=> 충전 시도 수에 제한을 걸어 해결하기
