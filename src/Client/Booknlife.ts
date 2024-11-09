@@ -129,7 +129,7 @@ class Booknlife {
     }
   }
 
-  public async charge(pin: string, code: string) {
+  public async charge(data: PinCode[]) {
     if (!this.accessToken) {
       throw new Error(`Login Required`);
     }
@@ -139,8 +139,12 @@ class Booknlife {
       await this.login();
     }
 
-    const EncryptPIN = EncryptAES(pin);
-    const EncryptCode = EncryptAES(code);
+    const pinList = data.map((v) => {
+      return {
+        pinNo: EncryptAES(v.pin),
+        pinPw: EncryptAES(v.code),
+      };
+    });
 
     const captchaResponse = await this.solveCaptcha(
       "https://www.booknlife.com/cashcharge/",
@@ -151,12 +155,7 @@ class Booknlife {
       "https://webapi.booknlife.com/api/Pay/PinCashCharge",
       {
         pinCashChargeType: "NORMAL",
-        pinList: [
-          {
-            pinNo: EncryptPIN,
-            pinPw: EncryptCode,
-          },
-        ],
+        pinList: pinList,
         vrtInfo: captchaResponse,
       },
       {
@@ -171,8 +170,13 @@ class Booknlife {
       throw new Error(`Charge Error`);
     }
 
-    return Request.data;
+    return Request.data.ResultData;
   }
 }
 
 export default Booknlife;
+
+interface PinCode {
+  pin: string;
+  code: string;
+}
